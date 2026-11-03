@@ -1245,7 +1245,7 @@ html:not(.show-notes) .confirm:not(.confirm--asset), html:not(.show-notes) .prot
 .foot__nl .form__small a { color: var(--white); }
 .foot__nl .btn--primary { background: var(--white); color: var(--red-deep); }
 .foot__nl .btn--primary:hover { background: var(--ink); color: var(--white); }
-.foot__nl .field input { background: rgba(255, 255, 255, 0.14); border-bottom-color: rgba(255, 255, 255, 0.7); color: var(--white); }
+.foot__nl .field input { background: rgba(16, 17, 17, 0.16); border-bottom-color: rgba(255, 255, 255, 0.7); color: var(--white); }
 .foot__nl .field input::placeholder { color: rgba(255, 255, 255, 0.75); }
 .foot__nl .field__err { color: var(--white); }
 .foot__nl :focus-visible { outline-color: var(--white); }

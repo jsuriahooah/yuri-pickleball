@@ -318,9 +318,9 @@
     const valid = { level: ['new', 'regular', 'experienced'], play: ['aggressive', 'relaxed'], line: ['signature', '120-grit', 'foam-tech', 'gen-4-honeycomb'] };
     Object.keys(st).forEach((k) => { if (!valid[k].includes(st[k])) st[k] = ''; });
     const sync = (fromUser) => {
-      $$('[data-level]', root).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.level === st.level)));
-      $$('[data-play]', root).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.play === st.play)));
-      $$('[data-line]', root).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.line === st.line)));
+      $$('button[data-level]', root).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.level === st.level)));
+      $$('button[data-play]', root).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.play === st.play)));
+      $$('button[data-line]', root).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.line === st.line)));
       const picks = st.level && st.play ? ((Y.finder || {})[st.level] || {})[st.play] || [] : [];
       let n = 0;
       cards.forEach((c) => {
@@ -581,16 +581,36 @@
     $$('.reveal').forEach((el) => io.observe(el));
   }
 
-  /* ---------- cookie banner and settings (copy/cookie-banner.md). Prototype: choice kept in localStorage ---------- */
+  /* ---------- Google Analytics 4, basic consent mode (copy/cookie-banner.md, 2026-11-03): no Google tag loads until
+     Analytics is on; GPC means off. The ID comes from <meta name="ga-id"> (v3_lib GA_ID); no ID, no tag. ---------- */
+  const GA = ($('meta[name="ga-id"]') || {}).content || '';
+  let gaOn = false;
+  function analytics(st) {
+    if (!GA || navigator.globalPrivacyControl === true) return;
+    const ads = st && st.marketing ? 'granted' : 'denied';
+    const consent = { analytics_storage: st && st.analytics ? 'granted' : 'denied', ad_storage: ads, ad_user_data: ads, ad_personalization: ads };
+    if (gaOn) { gtag('consent', 'update', consent); return; }
+    if (!(st && st.analytics)) return;
+    gaOn = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    gtag('consent', 'default', consent);
+    gtag('js', new Date()); gtag('config', GA);
+    const s = document.createElement('script'); s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA); document.head.appendChild(s);
+  }
+
+  /* ---------- cookie banner and settings (copy/cookie-banner.md). Choice kept in localStorage ---------- */
   function cookie() {
-    const c = $('[data-cookie]'), panel = $('[data-cookie-panel]'); if (!c || !panel) return;
     const KEY = 'yuri-v3-consent';
-    const gpc = navigator.globalPrivacyControl === true;
     let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { saved = null; }
+    analytics(saved);
+    const c = $('[data-cookie]'), panel = $('[data-cookie-panel]'); if (!c || !panel) return;
+    const gpc = navigator.globalPrivacyControl === true;
     const sw = $$('[data-ck]', panel);
     const setSw = (b, on) => { b.setAttribute('aria-checked', String(on)); b.setAttribute('aria-label', on ? b.dataset.on : b.dataset.off); };
     const fill = (st) => sw.forEach((b) => setSw(b, !gpc && !!(st && st[b.dataset.ck])));
-    const store = (st) => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* no storage */ } c.hidden = true; live(panel.dataset.saved); };
+    const store = (st) => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* no storage */ } c.hidden = true; live(panel.dataset.saved); analytics(st); };
     sw.forEach((b) => b.addEventListener('click', () => { if (!gpc) setSw(b, b.getAttribute('aria-checked') !== 'true'); }));
     if (gpc) $('[data-gpc]', panel).hidden = false;
     let opener = null;
