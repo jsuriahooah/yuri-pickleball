@@ -1,0 +1,156 @@
+/*
+ * YURI v3 prototypes: design tokens.
+ * Source: DESIGN.md and skills_output/produce-brand-guidelines/final-design-system.md (2026-10-22).
+ * tokens.json mirrors this file (_tools/build_tokens_json.py). Components read these; they never hardcode values.
+ */
+:root {
+  /* Colour: ink, paper and one red */
+  --ink: #101111;
+  --ink-2: #151616;
+  --ink-3: #1b1c1b;
+  --paper: #f7f5f0;
+  --paper-2: #efede7;
+  --stone: #ddd9cf;
+  --white: #ffffff;
+  --red: #ee3b35;          /* display accents, red on ink */
+  --red-ui: #d4302a;       /* buttons, red bands, small red text on paper or white, Power tag */
+  --red-deep: #b8241f;     /* hover and pressed, small red on paper 2 and stone, error text */
+  --logo-red: #ec1c24;     /* the logo only */
+  --grey-1: #4c4c48;
+  --grey-2: #5c5c57;
+  --grey-3: #6b6a65;
+  --success: #1b6e3f;
+  --line-dark: rgba(16, 17, 17, 0.16);
+  --line-light: rgba(255, 255, 255, 0.18);
+  --border-input: rgba(16, 17, 17, 0.55);
+  --border-input-dark: rgba(255, 255, 255, 0.45);
+  --on-dark-1: rgba(255, 255, 255, 0.74);
+  --on-dark-2: rgba(255, 255, 255, 0.62);
+  --frost: rgba(247, 245, 240, 0.86);   /* not used for menus (round 2: menus are opaque paper) */
+  --scrim: rgba(16, 17, 17, 0.48);
+  --overlay-photo: linear-gradient(to top, rgba(16, 17, 17, 0.78) 0%, rgba(16, 17, 17, 0.55) 40%, rgba(16, 17, 17, 0) 75%);
+  --confirm-bg: #ffe14d;
+  --confirm-ink: #2b2400;
+
+  /* Paddle category tags */
+  --cat-power: var(--red-ui);
+  --cat-control: var(--ink);
+
+  /* Type families */
+  --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+  --font-body: "Manrope", Arial, sans-serif;
+  /* Labels (Sun, 2026-10-22, round 2): Manrope 700, modest tracking. DM Mono is a backup font, not used. */
+  --font-label: "Manrope", Arial, sans-serif;
+  --fw-label: 700;
+
+  /* Type scale, mobile first (tablet 768+, desktop 1280+ below) */
+  /* Display sizes: Sun, 2026-10-22, v3 review. H1 about 135 px and H2 about 99 px on desktop (overrides the
+     104/74 px cap in web-ux-standards). Phone H1 about 70 px at 390 px. Fluid, so no breakpoint overrides. */
+  --fs-display: clamp(4.25rem, 2.6rem + 7.4vw, 8.4375rem);
+  --fs-h2: clamp(3rem, 1.9rem + 5.2vw, 6.1875rem);
+  --fs-h3: 2rem;
+  --fs-h4: 1.5rem;
+  --fs-promise: 2rem;
+  --fs-lead: 1.125rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+  --fs-price: 0.875rem;
+  --lh-display: 0.85;
+  --lh-body: 1.65;
+  --track-label: 0.06em;
+
+  /* Space: 4 px base */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Round 3 (Sun, 2026-10-23): full width like the live site. Gutters 16 px on phones, about 45 px at 1280, 50 px at 1440, 64 px from 1830 px. */
+  /* Content runs to 1792 px (1920 minus two gutters), then centres. Long text keeps its measure (prose 38rem, lead 34rem, p 68ch). */
+  /* Layout */
+  --gutter: clamp(16px, 3.5vw, 120px);   /* Sun 2026-10-28: grows with wide screens, like the live site */
+  --section-y: clamp(72px, 9vw, 125px);
+  --content-max: 2560px;   /* Sun 2026-10-28: full width like the live site (was 1792 px, which centred the header on wide screens) */
+  --measure: 68ch;
+  --prose-max: 38rem;
+  --header-h: 76px;
+  --header-h-scrolled: 64px;
+  --legend-w: 280px;
+  --drawer-w: 420px;
+  --sticky-atc-h: 64px;
+
+  /* Fills (Sun, 2026-10-22, v3 review): no strokes. Cards and chips are defined by fill only. */
+  --fill-soft: rgba(16, 17, 17, 0.06);
+  --fill-soft-2: rgba(16, 17, 17, 0.1);
+  --tint-power: #fbe4e3;
+
+  /* Round 3 (Sun, 2026-10-23): the live site's circle and gradient, values from existing-site/tokens-observed.json. */
+  /* Live disc radial-gradient(circle, #fff, rgb(231,227,216) 70%); hero field 120deg #efede7 to #f7f5f0 55% to #d8d4c9; card field 145deg #fff to #e9e9e2. */
+  /* No orbit lines and no stroke on the disc: it is set apart by its gradient and a soft shadow. */
+  /* Paddle stage */
+  --disc-edge: #e3dfd3;
+  --disc: radial-gradient(circle at 50% 42%, #ffffff 0%, #fbfaf7 22%, var(--disc-edge) 70%);
+  --disc-shadow: 0 36px 72px rgba(16, 17, 17, 0.13), 0 6px 18px rgba(16, 17, 17, 0.06);
+  --disc-dark: radial-gradient(circle at 50% 40%, rgba(238, 59, 53, 0.16) 0%, rgba(238, 59, 53, 0) 38%), radial-gradient(circle, #30312f 0%, #1c1d1c 70%);
+  --disc-shadow-dark: 0 40px 80px rgba(0, 0, 0, 0.45);
+  --field-hero: linear-gradient(120deg, var(--paper-2) 0%, var(--paper) 55%, #d8d4c9 100%);
+  --field-hero-alt: linear-gradient(120deg, #e3e0d6 0%, #f5f3ed 58%, #d8d4c9 100%);
+  --field-card: linear-gradient(145deg, #ffffff 0%, #e9e9e2 100%);
+  /* Round 1 (Sun, 2026-10-28): dark heroes get the same corner gradient as the light field, and thin orbit lines
+     circle the paddles like the live site. */
+  --field-hero-dark: linear-gradient(120deg, #0b0c0c 0%, var(--ink) 50%, #2b2c2a 100%);
+  --orbit: rgba(238, 59, 53, 0.5);
+  --ribbon-h: 44px;   /* notice ribbon above the header (Sun, 2026-10-28; taller in round 3) */
+  --orbit-dark: rgba(238, 59, 53, 0.62);
+
+  /* Radius and shadows */
+  --radius-none: 0;
+  --radius-xs: 2px;
+  --radius-full: 9999px;
+  --shadow-paddle: drop-shadow(16px 23px 19px rgba(9, 10, 9, 0.18));
+  --shadow-paddle-dark: drop-shadow(18px 30px 20px rgba(0, 0, 0, 0.45));
+  --shadow-panel: 0 24px 48px rgba(16, 17, 17, 0.12);
+  --shadow-drawer: -24px 0 48px rgba(16, 17, 17, 0.18);
+  --shadow-sticky: 0 -8px 24px rgba(16, 17, 17, 0.12);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-close: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-fast: 180ms;
+  --dur-med: 280ms;
+  --dur-slide: 600ms;
+  --dur-reveal: 600ms;
+  --reveal-rise: 24px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --fs-h3: 2.375rem;
+    --fs-h4: 1.625rem;
+    --fs-promise: 2.5rem;
+    --fs-lead: 1.1875rem;
+    --fs-body: 1.0625rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --fs-h3: 2.75rem;
+    --fs-h4: 1.875rem;
+    --fs-promise: 3rem;
+    --fs-lead: 1.25rem;
+    --fs-body: 1.125rem;
+    --fs-small: 0.9375rem;
+    --fs-label: 0.8125rem;
+    --fs-price: 0.9375rem;
+    --header-h: clamp(104px, 6.6vw, 150px);
+    --header-h-scrolled: 72px;
+  }
+}
