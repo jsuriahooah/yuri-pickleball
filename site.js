@@ -147,7 +147,7 @@
     Y.menu = set;
   }
 
-  /* ---------- cart (prototype: localStorage stands in for the Storefront API cart) ---------- */
+  /* ---------- cart: kept in localStorage; Checkout turns it into a Shopify cart (/api/checkout) ---------- */
   const CART_KEY = 'yuri-v3-cart';
   const cart = {
     lines: [],
@@ -227,10 +227,27 @@
       if (q) { cart.set(id, l.qty + +q.dataset.qty); renderCart(); const again = $(`[data-line-id="${id}"] [data-qty="${q.dataset.qty}"]`, d); (again || $('[data-cart-close]', d)).focus(); }
       if (e.target.closest('[data-remove]')) { cart.set(id, 0); renderCart(); $('[data-cart-close]', d).focus(); }
     });
+    // Checkout: /api/checkout makes a Shopify cart from these lines and returns its checkoutUrl (Sun, 2026-11-03).
+    // Paddles go by their store handle; accessory ids are "handle|colour|size", the store's own option values.
     $('[data-checkout]', d).addEventListener('click', (e) => {
-      const b = e.currentTarget, span = $('span', b), was = span.textContent;
-      b.disabled = true; span.textContent = d.dataset.checkoutLoading;
-      setTimeout(() => { b.disabled = false; span.textContent = was; toast('Prototype: Checkout goes straight to Shopify checkout (cart.checkoutUrl).'); }, 900);
+      const b = e.currentTarget, span = $('span', b), was = span.textContent, err = $('[data-checkout-err]', d);
+      const fail = (msg) => { b.disabled = false; span.textContent = was; err.textContent = msg; err.hidden = false; };
+      const lines = cart.lines.map((l) => {
+        const p = byId(l.id), [h, ...opts] = l.id.split('|');
+        return p.acc ? { handle: h, options: opts.filter(Boolean), qty: l.qty } : { handle: p.handle, options: [], qty: l.qty };
+      });
+      b.disabled = true; span.textContent = d.dataset.checkoutLoading; err.hidden = true;
+      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lines }) })
+        .then((r) => r.json().catch(() => ({})).then((j) => ({ status: r.status, j })))
+        .then(({ status, j }) => {
+          if (status === 200 && j.ok && j.url) {
+            Y.track('outbound_click', { link_location: 'cart', link_text: was, link_domain: new URL(j.url).hostname });
+            location.href = j.url; return;
+          }
+          if (status === 409 && j.lines && j.lines.length) return fail(d.dataset.soldOut.replace('{Paddle name}', byId(cart.lines[j.lines[0]].id).name));
+          fail(status === 503 ? d.dataset.checkoutPreview : d.dataset.checkoutError);
+        })
+        .catch(() => fail(d.dataset.checkoutError));
     });
     document.addEventListener('click', (e) => {
       const b = e.target.closest('[data-add]'); if (!b) return;
