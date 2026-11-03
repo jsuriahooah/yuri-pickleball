@@ -25,8 +25,8 @@ window.YURI.paddles = [
   "headline": "Our most powerful paddle.",
   "handle": "vortex-pro",
   "images": [
-   "../assets/paddles/signature/vortex-16-01-face.webp",
-   "../assets/paddles/signature/vortex-16-02-angle.webp",
+   "/assets/paddles/signature/vortex-16-01-face.webp",
+   "/assets/paddles/signature/vortex-16-02-angle.webp",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/yuri-signature-vortex-16-06-boxset.jpg?v=1791921177"
   ],
   "spec": [
@@ -106,8 +106,8 @@ window.YURI.paddles = [
   "headline": "The Vortex core, with a touch more control.",
   "handle": "vortex-pro-spin-14mm",
   "images": [
-   "../assets/paddles/signature/vortex-14-01-face.webp",
-   "../assets/paddles/signature/vortex-14-02-angle.webp",
+   "/assets/paddles/signature/vortex-14-01-face.webp",
+   "/assets/paddles/signature/vortex-14-02-angle.webp",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/yuri-signature-vortex-14-06-boxset.jpg?v=1791921177"
   ],
   "spec": [
@@ -189,8 +189,8 @@ window.YURI.paddles = [
   "headline": "They'll never see your strike coming.",
   "handle": "cobra-strike-honeycomb-propulsion-core",
   "images": [
-   "../assets/paddles/signature/cobra-16-01-face.webp",
-   "../assets/paddles/signature/cobra-16-02-angle.webp",
+   "/assets/paddles/signature/cobra-16-01-face.webp",
+   "/assets/paddles/signature/cobra-16-02-angle.webp",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/yuri-signature-cobra-16-06-boxset.jpg?v=1791921177"
   ],
   "spec": [
@@ -272,8 +272,8 @@ window.YURI.paddles = [
   "headline": "Earn your stripes on the court.",
   "handle": "tiger-honeycomb-propulsion-core-14mm",
   "images": [
-   "../assets/paddles/signature/tiger-14-01-face.webp",
-   "../assets/paddles/signature/tiger-14-02-angle.webp",
+   "/assets/paddles/signature/tiger-14-01-face.webp",
+   "/assets/paddles/signature/tiger-14-02-angle.webp",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/yuri-signature-tiger-14-06-boxset.jpg?v=1791921177"
   ],
   "spec": [
@@ -353,8 +353,8 @@ window.YURI.paddles = [
   "headline": "Win points with a sting.",
   "handle": "the-wasp",
   "images": [
-   "../assets/paddles/signature/wasp-16-01-face.webp",
-   "../assets/paddles/signature/wasp-16-02-angle.webp",
+   "/assets/paddles/signature/wasp-16-01-face.webp",
+   "/assets/paddles/signature/wasp-16-02-angle.webp",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/yuri-signature-wasp-16-06-boxset.jpg?v=1791921178"
   ],
   "spec": [
@@ -434,8 +434,8 @@ window.YURI.paddles = [
   "headline": "Control the court.",
   "handle": "scorpion-charged-hive-core-14mm",
   "images": [
-   "../assets/paddles/signature/scorpion-14-01-face.webp",
-   "../assets/paddles/signature/scorpion-14-02-angle.webp",
+   "/assets/paddles/signature/scorpion-14-01-face.webp",
+   "/assets/paddles/signature/scorpion-14-02-angle.webp",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/yuri-signature-scorpion-14-06-boxset.jpg?v=1791921178"
   ],
   "spec": [
@@ -596,7 +596,7 @@ window.YURI.paddles = [
   "headline": "Rule the court, with added spin.",
   "handle": "purple-reign-14mm-spin",
   "images": [
-   "../assets/paddles/purple-reign-120-grit-front.png",
+   "/assets/paddles/purple-reign-120-grit-front.png",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/topPurpleReign120Grit.png?v=1772026316",
    "https://cdn.shopify.com/s/files/1/0692/0916/1859/files/sidePurpleReign120Grit.png?v=1772026316"
   ],
