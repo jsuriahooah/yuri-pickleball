@@ -582,7 +582,7 @@
   }
 
   /* ---------- Google Analytics 4, basic consent mode (copy/cookie-banner.md, 2026-11-03): no Google tag loads until
-     Analytics is on; GPC means off. The ID comes from <meta name="ga-id"> (v3_lib GA_ID); no ID, no tag. ---------- */
+     Analytics is on; GPC means off. The ID comes from <meta name="ga-id">, added by export_site.py only; no ID, no tag. ---------- */
   const GA = ($('meta[name="ga-id"]') || {}).content || '';
   let gaOn = false;
   function analytics(st) {
