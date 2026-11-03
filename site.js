@@ -100,7 +100,7 @@
 
   /* ---------- mega menus ---------- */
   function mega() {
-    const triggers = $$('.nav-trigger');
+    const triggers = $$('.nav-trigger[data-panel]');
     let open = null;
     const close = (focus) => {
       if (!open) return;
@@ -487,6 +487,32 @@
   }
 
   /* ---------- forms (no network in the prototype) ---------- */
+  /* A form's fields as the lead route expects them (ghl-website-forms-spec §7): name, email, phone, company, need, message.
+     Demo and partner details go into the message as "Label: value" lines, so they land in the GHL note. */
+  const FORM_NEED = { demo: 'Demo days', partner: 'Partnering' };   // copy/00-global.md forms section
+  const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  function leadFrom(f) {
+    const out = { type: f.dataset.form === 'newsletter' ? 'newsletter' : 'contact', form_id: f.dataset.form, page: location.pathname };
+    const extra = [];
+    $$('input, select, textarea', f).forEach((x) => {
+      if (x.type === 'checkbox' && x.name === 'newsletter-opt-in') { out.newsletter = x.checked; return; }
+      if (!x.name || (x.type === 'radio' && !x.checked)) return;
+      const v = x.value.trim();
+      if (x.classList.contains('hp')) { out.website = v; return; }
+      if (!v) return;
+      const key = x.type === 'email' ? 'email' : x.name.replace(/^(c|demo|partner)-/, '');
+      if (['name', 'phone', 'email', 'need', 'message'].includes(key)) out[key] = v;
+      else if (key === 'business-or-club') out.company = v;
+      else {
+        const lab = x.type === 'radio' ? $('legend', x.closest('fieldset')) : f.querySelector(`label[for="${x.id}"]`);
+        extra.push(`${lab ? lab.textContent.replace(/\(optional\)/i, '').trim() : key}: ${v}`);
+      }
+    });
+    if (!out.need && FORM_NEED[f.dataset.form]) out.need = FORM_NEED[f.dataset.form];
+    if (extra.length) out.message = [...extra, out.message].filter(Boolean).join('\n');
+    return out;
+  }
+
   function forms() {
     const errs = Y.formErrors || {};
     $$('form[data-form]').forEach((f) => {
@@ -517,9 +543,25 @@
           if (!ok && !first) first = fs.querySelector('input');
         });
         if (first) { first.focus(); return; }
-        const b = $('button[type=submit]', f), span = $('span', b);
+        const b = $('button[type=submit]', f), span = $('span', b), was = span.textContent;
         b.disabled = true; span.textContent = b.dataset.sending || 'Sending…';
-        setTimeout(done, 700);
+        const lead = leadFrom(f);
+        const fail = (msg) => {
+          b.disabled = false; span.textContent = was;
+          let p = $('.form__err', f);
+          if (!p) { p = document.createElement('p'); p.className = 'field__err form__err'; p.setAttribute('role', 'alert'); b.closest('.form__actions, form').after(p); }
+          p.textContent = msg;
+        };
+        // One route for every form (tracking standard §2); the event fires only after the server confirms delivery
+        fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) })
+          .then((r) => r.json().catch(() => ({})).then((j) => ({ status: r.status, ok: j.ok === true })))
+          .then(({ status, ok }) => {
+            if (status !== 200 || !ok) { fail(status === 503 ? errs.preview : errs.error); return; }
+            const fe = $('.form__err', f); if (fe) fe.remove();
+            if (Y.track) Y.track(lead.type === 'newsletter' ? 'sign_up' : 'generate_lead', { form_id: lead.form_id, link_location: 'form_success', item_id: lead.type === 'newsletter' ? undefined : slug(lead.need || '') });
+            done();
+          })
+          .catch(() => fail(errs.error));
       });
       if (params.get('state') === 'sent') done();
     });
@@ -581,35 +623,21 @@
     $$('.reveal').forEach((el) => io.observe(el));
   }
 
-  /* ---------- Google Analytics 4, basic consent mode (copy/cookie-banner.md, 2026-11-03): no Google tag loads until
-     Analytics is on; GPC means off. The ID comes from <meta name="ga-id">, added by export_site.py only; no ID, no tag. ---------- */
-  const GA = ($('meta[name="ga-id"]') || {}).content || '';
-  let gaOn = false;
-  function analytics(st) {
-    if (!GA || navigator.globalPrivacyControl === true) return;
-    const ads = st && st.marketing ? 'granted' : 'denied';
-    const consent = { analytics_storage: st && st.analytics ? 'granted' : 'denied', ad_storage: ads, ad_user_data: ads, ad_personalization: ads };
-    if (gaOn) { gtag('consent', 'update', consent); return; }
-    if (!(st && st.analytics)) return;
-    gaOn = true;
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { dataLayer.push(arguments); };
-    gtag('consent', 'default', consent);
-    gtag('js', new Date()); gtag('config', GA);
-    const s = document.createElement('script'); s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA); document.head.appendChild(s);
-  }
+  /* Analytics (GTM, consent, click events) lives in analytics.js; the banner hands each choice to Y.analyticsConsent. */
+  const analytics = (st) => { if (Y.analyticsConsent) Y.analyticsConsent(st); };
 
   /* ---------- cookie banner and settings (copy/cookie-banner.md). Choice kept in localStorage ---------- */
   function cookie() {
     const KEY = 'yuri-v3-consent';
     let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { saved = null; }
-    analytics(saved);
+    let deflt = null;   // the region default until the visitor chooses (analytics.js)
+    if (saved) analytics(saved);
+    else if (Y.consentDefault) Y.consentDefault().then((d) => { deflt = d; analytics(d); });
     const c = $('[data-cookie]'), panel = $('[data-cookie-panel]'); if (!c || !panel) return;
     const gpc = navigator.globalPrivacyControl === true;
     const sw = $$('[data-ck]', panel);
     const setSw = (b, on) => { b.setAttribute('aria-checked', String(on)); b.setAttribute('aria-label', on ? b.dataset.on : b.dataset.off); };
-    const fill = (st) => sw.forEach((b) => setSw(b, !gpc && !!(st && st[b.dataset.ck])));
+    const fill = (st) => sw.forEach((b) => setSw(b, !gpc && !!((st || deflt) && (st || deflt)[b.dataset.ck])));
     const store = (st) => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* no storage */ } c.hidden = true; live(panel.dataset.saved); analytics(st); };
     sw.forEach((b) => b.addEventListener('click', () => { if (!gpc) setSw(b, b.getAttribute('aria-checked') !== 'true'); }));
     if (gpc) $('[data-gpc]', panel).hidden = false;

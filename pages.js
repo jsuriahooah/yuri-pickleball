@@ -441,4 +441,4 @@ window.YURI.states = [
   "file": "pages/paddles.html?a=cobra&b=tiger#compare"
  }
 ];
-window.YURI.formErrors = {"required": "Please fill this in.", "email": "Please check your email address.", "pick": "Please pick one.", "error": "Something went wrong on our side. Please try again, or email us at info.yuripb@gmail.com."};
+window.YURI.formErrors = {"required": "Please fill this in.", "email": "Please check your email address.", "pick": "Please pick one.", "error": "Something went wrong on our side. Please try again, or email us at info.yuripb@gmail.com.", "preview": "This preview isn't connected yet. Please email us at info.yuripb@gmail.com."};

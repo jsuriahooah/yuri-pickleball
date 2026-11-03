@@ -1355,3 +1355,7 @@ html:not(.show-notes) .confirm:not(.confirm--asset), html:not(.show-notes) .prot
 .basic__body h3 { font-size: var(--fs-h3); }
 .layer--resin-sealed-sides .layer__bar { height: 6px; width: 96%; margin-left: 2%; background: repeating-linear-gradient(90deg, var(--grey-2) 0 10px, transparent 10px 16px); }
 @media (max-width: 767px) { .photo-hero > img { object-position: var(--pos-m, 50%) 40%; } }
+
+/* ---------- newsletter opt-in on inquiry forms (Sun, 2026-11-03) ---------- */
+.field--check .check { display: flex; gap: var(--space-2); align-items: flex-start; cursor: pointer; }
+.field--check input { width: 20px; height: 20px; min-height: 0; margin: 2px 0 0; padding: 0; border: 0; background: none; box-shadow: none; flex: none; accent-color: var(--red-ui); }

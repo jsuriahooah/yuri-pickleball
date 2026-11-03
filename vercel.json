@@ -5,232 +5,232 @@
     {
       "source": "/compare",
       "destination": "/paddles#compare",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/technology",
       "destination": "/blog/paddle-construction",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/insights",
       "destination": "/blog",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/insights/how-to-choose-a-pickleball-paddle",
       "destination": "/blog/category/guides",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/insights/t700-vs-t800-carbon-fiber-pickleball-paddles",
       "destination": "/blog/paddle-construction",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/insights/what-makes-a-powerful-pickleball-paddle-vortex-pro",
       "destination": "/paddles/vortex-pro",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/compare/vortex-pro-vs-cobra-strike-honeycomb-propulsion-core",
       "destination": "/paddles?a=vortex-pro&b=cobra",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/cobra-strike-honeycomb-propulsion-core",
       "destination": "/paddles/cobra",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/jett-black-gen4-honeycomb",
       "destination": "/paddles/jett-black",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/barbee-gen4-honeycomb",
       "destination": "/paddles/pink-and-chic",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/barbee-phat-gen4-honeycomb",
       "destination": "/paddles/pink-and-chic-phat",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/cherry-bomb-gen4-honeycomb",
       "destination": "/paddles/cherry-bomb",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/blaze-blue-2",
       "destination": "/paddles/blaze-blue",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/bazooka-foam-tech-4-5",
       "destination": "/paddles/bazooka",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/purple-reign-gen4-foam-tech",
       "destination": "/paddles/purple-reign",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/golden-pickle-foam-tech",
       "destination": "/paddles/golden-pickle",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/bazooka-16mm-spin",
       "destination": "/paddles/bazooka-120-grit",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/purple-reign-14mm-spin",
       "destination": "/paddles/purple-reign-120-grit",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/blaze-blue-16mm-spin",
       "destination": "/paddles/blaze-blue-120-grit",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/120-grit-spin-carbon-series-jett-black",
       "destination": "/paddles/jett-black-120-grit",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/120-grit-spin-carbon-series-cherry-bomb-16mm-spin",
       "destination": "/paddles/cherry-bomb-120-grit",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/purple-reign-gen4-honeycomb",
       "destination": "/paddles/purple-reign",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/golden-pickle-1",
       "destination": "/paddles/golden-pickle",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/vortex-pro-spin-14mm",
       "destination": "/paddles/vortex-pro-14mm",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/tiger-honeycomb-propulsion-core-14mm",
       "destination": "/paddles/tiger",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/scorpion-charged-hive-core-14mm",
       "destination": "/paddles/scorpion",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/pickleball-accessories",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/pickleball-accessories/pickleball-tapes",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/tech",
       "destination": "/blog/paddle-construction",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/events",
       "destination": "/demo",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/blog/t700-vs-t800-carbon-fiber-pickleball-paddles",
       "destination": "/blog/paddle-construction",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/blog/what-makes-a-powerful-pickleball-paddle-vortex-pro",
       "destination": "/paddles/vortex-pro",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/guides",
       "destination": "/blog",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/guides/:slug",
       "destination": "/blog/:slug",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddle-construction",
       "destination": "/blog/paddle-construction",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/gen-3-honeycomb",
       "destination": "/paddles/gen-4-honeycomb",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/120-grit-spin-carbon",
       "destination": "/paddles/120-grit",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles/compare",
       "destination": "/compare",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/compare/matchup-cobra-strike-vs-tiger",
       "destination": "/compare/cobra-vs-tiger",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/bags",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/bags/:slug",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/gear",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/gear/:slug",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/apparel",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/apparel/:path*",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/accessories/:slug",
       "destination": "/accessories",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles",
@@ -242,7 +242,7 @@
         }
       ],
       "destination": "/paddles/signature-black-and-white",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles",
@@ -254,7 +254,7 @@
         }
       ],
       "destination": "/paddles/foam-tech",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/paddles",
@@ -266,7 +266,7 @@
         }
       ],
       "destination": "/paddles/120-grit",
-      "statusCode": 301
+      "permanent": true
     }
   ],
   "headers": [
