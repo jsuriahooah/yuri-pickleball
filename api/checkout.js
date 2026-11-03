@@ -1,8 +1,8 @@
 /* POST /api/checkout: the site's cart into a Shopify cart, then the browser goes to its checkoutUrl (Sun, 2026-11-03, option a).
  * Body: { lines: [{ handle, options: [option values], qty }] }. Paddles send no options and get the "Paddle Only" variant
  * (the price the site shows); accessories send their colour and size values, matched to the variant's selected options.
- * Storefront API with a private token, so the token lives in Vercel only, like the GHL token:
- * SHOPIFY_STOREFRONT_PRIVATE_TOKEN (Headless channel), SHOPIFY_STORE_DOMAIN (the myshopify.com domain). */
+ * Storefront API: with SHOPIFY_STOREFRONT_PRIVATE_TOKEN (Headless channel, Vercel only, like the GHL token) when it is set and
+ * accepted, else tokenless (products and cart need no token; lower limits). SHOPIFY_STORE_DOMAIN overrides the store domain. */
 const API_VERSION = process.env.SHOPIFY_API_VERSION || '2026-07';
 const SOURCE = 'yuripickleballpaddles.com';
 const HANDLE = /^[a-z0-9][a-z0-9-]{0,99}$/;
@@ -10,16 +10,22 @@ const MAX_LINES = 30, MAX_QTY = 20;
 const WINDOW_MS = 10 * 60 * 1000, MAX_HITS = 20;
 const hits = new Map();   // ip -> timestamps; per function instance
 
-const isConfigured = () => Boolean(process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN && process.env.SHOPIFY_STORE_DOMAIN);
+const DOMAIN = () => process.env.SHOPIFY_STORE_DOMAIN || 'exq8kt-ty.myshopify.com';
 const norm = (s) => String(s).trim().toLowerCase();
 
 async function storefront(query, variables, ip) {
-  const r = await fetch(`https://${process.env.SHOPIFY_STORE_DOMAIN}/api/${API_VERSION}/graphql.json`, {
+  const token = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN;
+  const call = (withToken) => fetch(`https://${DOMAIN()}/api/${API_VERSION}/graphql.json`, {
     method: 'POST', signal: AbortSignal.timeout(10000),
-    headers: { 'Content-Type': 'application/json', 'Shopify-Storefront-Private-Token': process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN,
-      ...(ip !== 'unknown' ? { 'Shopify-Storefront-Buyer-IP': ip } : {}) },
+    headers: { 'Content-Type': 'application/json', ...(withToken ? { 'Shopify-Storefront-Private-Token': token,
+      ...(ip !== 'unknown' ? { 'Shopify-Storefront-Buyer-IP': ip } : {}) } : {}) },
     body: JSON.stringify({ query, variables }),
   });
+  let r = await call(Boolean(token));
+  if (token && (r.status === 401 || r.status === 403)) {
+    console.warn(`Storefront token refused (${r.status}); using tokenless access. Check SHOPIFY_STOREFRONT_PRIVATE_TOKEN.`);
+    r = await call(false);
+  }
   if (!r.ok) throw new Error(`Storefront ${r.status}`);
   const j = await r.json();
   if (j.errors && j.errors.length) throw new Error(`Storefront: ${j.errors[0].message}`);
@@ -58,7 +64,6 @@ module.exports = async function handler(req, res) {
   if (lines.some((l) => !HANDLE.test(l.handle) || !(l.qty >= 1 && l.qty <= MAX_QTY))) return res.status(400).json({ ok: false, error: 'invalid' });
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
   if (throttled(ip)) return res.status(429).json({ ok: false, error: 'rate_limited' });
-  if (!isConfigured()) return res.status(503).json({ ok: false, error: 'not_configured' });
   try {
     const byHandle = await variantsFor([...new Set(lines.map((l) => l.handle))], ip);
     const soldOut = [], merch = [];

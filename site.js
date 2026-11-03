@@ -245,7 +245,7 @@
             location.href = j.url; return;
           }
           if (status === 409 && j.lines && j.lines.length) return fail(d.dataset.soldOut.replace('{Paddle name}', byId(cart.lines[j.lines[0]].id).name));
-          fail(status === 503 ? d.dataset.checkoutPreview : d.dataset.checkoutError);
+          fail(d.dataset.checkoutError);
         })
         .catch(() => fail(d.dataset.checkoutError));
     });
@@ -573,7 +573,7 @@
         fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) })
           .then((r) => r.json().catch(() => ({})).then((j) => ({ status: r.status, ok: j.ok === true })))
           .then(({ status, ok }) => {
-            if (status !== 200 || !ok) { fail(status === 503 ? errs.preview : errs.error); return; }
+            if (status !== 200 || !ok) { fail(errs.error); return; }
             const fe = $('.form__err', f); if (fe) fe.remove();
             if (Y.track) Y.track(lead.type === 'newsletter' ? 'sign_up' : 'generate_lead', { form_id: lead.form_id, link_location: 'form_success', item_id: lead.type === 'newsletter' ? undefined : slug(lead.need || '') });
             done();
