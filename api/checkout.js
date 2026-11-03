@@ -15,16 +15,20 @@ const norm = (s) => String(s).trim().toLowerCase();
 
 async function storefront(query, variables, ip) {
   const token = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN;
-  const call = (withToken) => fetch(`https://${DOMAIN()}/api/${API_VERSION}/graphql.json`, {
+  // mode: private token (with the buyer IP), the same token as a public one, or no token
+  const call = (mode) => fetch(`https://${DOMAIN()}/api/${API_VERSION}/graphql.json`, {
     method: 'POST', signal: AbortSignal.timeout(10000),
-    headers: { 'Content-Type': 'application/json', ...(withToken ? { 'Shopify-Storefront-Private-Token': token,
-      ...(ip !== 'unknown' ? { 'Shopify-Storefront-Buyer-IP': ip } : {}) } : {}) },
+    headers: { 'Content-Type': 'application/json',
+      ...(mode === 'private' ? { 'Shopify-Storefront-Private-Token': token, ...(ip !== 'unknown' ? { 'Shopify-Storefront-Buyer-IP': ip } : {}) } : {}),
+      ...(mode === 'public' ? { 'X-Shopify-Storefront-Access-Token': token } : {}) },
     body: JSON.stringify({ query, variables }),
   });
-  let r = await call(Boolean(token));
-  if (token && (r.status === 401 || r.status === 403)) {
+  const refused = (r) => r.status === 401 || r.status === 403;
+  let r = await call(token ? 'private' : 'none');
+  if (token && refused(r)) r = await call('public');
+  if (token && refused(r)) {
     console.warn(`Storefront token refused (${r.status}); using tokenless access. Check SHOPIFY_STOREFRONT_PRIVATE_TOKEN.`);
-    r = await call(false);
+    r = await call('none');
   }
   if (!r.ok) throw new Error(`Storefront ${r.status}`);
   const j = await r.json();
