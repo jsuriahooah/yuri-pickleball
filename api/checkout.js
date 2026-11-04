@@ -10,7 +10,11 @@ const MAX_LINES = 30, MAX_QTY = 20;
 const WINDOW_MS = 10 * 60 * 1000, MAX_HITS = 20;
 const hits = new Map();   // ip -> timestamps; per function instance
 
-const DOMAIN = () => process.env.SHOPIFY_STORE_DOMAIN || 'exq8kt-ty.myshopify.com';
+// "https://shop.myshopify.com/" and "shop.myshopify.com" both work; anything else falls back to the YURI store
+const DOMAIN = () => {
+  const d = String(process.env.SHOPIFY_STORE_DOMAIN || '').trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  return /^[a-z0-9.-]+\.[a-z]{2,}$/.test(d) ? d : 'exq8kt-ty.myshopify.com';
+};
 const norm = (s) => String(s).trim().toLowerCase();
 
 async function storefront(query, variables, ip) {
@@ -83,6 +87,8 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, url: c.cart.checkoutUrl });
   } catch (e) {
     console.error('checkout failed:', e.message);   // never the token
-    return res.status(502).json({ ok: false, error: 'checkout_failed' });
+    // reason: a short code for testing (Storefront status, timeout or network), never the token or the domain
+    const reason = (/Storefront (\d+)/.exec(e.message) || [])[1] || (e.name === 'TimeoutError' ? 'timeout' : /cartCreate/.test(e.message) ? 'cart' : /Storefront:/.test(e.message) ? 'graphql' : 'network');
+    return res.status(502).json({ ok: false, error: 'checkout_failed', reason });
   }
 };
