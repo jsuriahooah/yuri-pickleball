@@ -65,6 +65,9 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true });
   } catch (e) {
     console.error('lead delivery failed:', e.message);   // never the token
-    return res.status(502).json({ ok: false, error: 'delivery_failed' });
+    // reason: which GHL call failed and its status (for testing), e.g. upsert_400; never the token or the payload
+    const m = /GHL (upsert|tags) (\d+)/.exec(e.message);
+    const reason = m ? `${m[1]}_${m[2]}` : e.name === 'TimeoutError' ? 'timeout' : /no contact id/.test(e.message) ? 'no_contact_id' : 'network';
+    return res.status(502).json({ ok: false, error: 'delivery_failed', reason });
   }
 };
