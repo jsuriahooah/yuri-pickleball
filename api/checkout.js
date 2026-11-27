@@ -1,11 +1,14 @@
 /* POST /api/checkout: the site's cart into a Shopify cart, then the browser goes to its checkoutUrl (Sun, 2026-11-03, option a).
- * Body: { lines: [{ handle, options: [option values], qty }] }. Paddles send no options and get the "Paddle Only" variant
+ * Body: { lines: [{ handle, options: [option values], qty }], discountCodes?: [code] }. The code comes from the running
+ * promotion (Sun, 2026-11-27); Shopify decides whether it applies, so a wrong or expired code only means no discount.
+ * Paddles send no options and get the "Paddle Only" variant
  * (the price the site shows); accessories send their colour and size values, matched to the variant's selected options.
  * Storefront API: with SHOPIFY_STOREFRONT_PRIVATE_TOKEN (Headless channel, Vercel only, like the GHL token) when it is set and
  * accepted, else tokenless (products and cart need no token; lower limits). SHOPIFY_STORE_DOMAIN overrides the store domain. */
 const API_VERSION = process.env.SHOPIFY_API_VERSION || '2026-07';
 const SOURCE = 'yuripickleballpaddles.com';
 const HANDLE = /^[a-z0-9][a-z0-9-]{0,99}$/;
+const CODE = /^[A-Za-z0-9][A-Za-z0-9 %_-]{0,39}$/;
 const MAX_LINES = 30, MAX_QTY = 20;
 const WINDOW_MS = 10 * 60 * 1000, MAX_HITS = 20;
 const hits = new Map();   // ip -> timestamps; per function instance
@@ -70,6 +73,7 @@ module.exports = async function handler(req, res) {
   const lines = raw.map((l) => ({ handle: String((l && l.handle) || ''), qty: Math.floor(Number(l && l.qty)),
     options: Array.isArray(l && l.options) ? l.options.slice(0, 3).map((o) => String(o).slice(0, 60)).filter(Boolean) : [] }));
   if (lines.some((l) => !HANDLE.test(l.handle) || !(l.qty >= 1 && l.qty <= MAX_QTY))) return res.status(400).json({ ok: false, error: 'invalid' });
+  const codes = (Array.isArray(body.discountCodes) ? body.discountCodes : []).slice(0, 1).map((c) => String(c).trim()).filter((c) => CODE.test(c));
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
   if (throttled(ip)) return res.status(429).json({ ok: false, error: 'rate_limited' });
   try {
@@ -81,7 +85,7 @@ module.exports = async function handler(req, res) {
     });
     if (soldOut.length) return res.status(409).json({ ok: false, error: 'sold_out', lines: soldOut });
     const data = await storefront(`mutation($input: CartInput!) { cartCreate(input: $input) { cart { checkoutUrl } userErrors { field message } } }`,
-      { input: { lines: merch, attributes: [{ key: '_source', value: SOURCE }] } }, ip);
+      { input: { lines: merch, attributes: [{ key: '_source', value: SOURCE }], ...(codes.length ? { discountCodes: codes } : {}) } }, ip);
     const c = data.cartCreate;
     if (c.userErrors.length || !c.cart) throw new Error(`cartCreate: ${c.userErrors.map((e) => e.message).join('; ')}`);
     return res.status(200).json({ ok: true, url: c.cart.checkoutUrl });

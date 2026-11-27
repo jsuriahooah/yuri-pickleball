@@ -299,6 +299,11 @@ body.menu-open .site-header .hdr { height: var(--header-h); }
 .slide__h { font-family: var(--font-display); font-weight: 400; font-size: min(var(--fs-display), 16vw, 9vh); line-height: var(--lh-display); letter-spacing: -0.02em; text-transform: uppercase; text-wrap: balance; max-width: 12ch; }
 .slide__sub { font-size: var(--fs-lead); line-height: 1.45; max-width: 30rem; text-wrap: pretty; }
 .slide--dark .slide__sub { color: var(--on-dark-1); }
+/* promotion slide (Sun, 2026-11-27): eyebrow, red accent in the headline, fine print under the button */
+.slide--dark .eyebrow { color: var(--on-dark-1); }
+.slide__fine { font-size: var(--fs-small); color: var(--grey-1); }
+.slide--dark .slide__fine { color: var(--on-dark-1); }
+.slide__h .accent { color: var(--red); }
 .slide__copy .proto-note { margin-top: 0; font-size: 11px; padding: 4px 8px; }
 .slide--dark .proto-note { color: var(--on-dark-1); background: rgba(255, 225, 77, 0.1); }
 .hero-foot { position: absolute; z-index: 3; left: var(--gutter); right: var(--gutter); bottom: 16px; display: grid; gap: 4px; justify-items: start; pointer-events: none; }
@@ -604,6 +609,7 @@ fieldset.field { border: 0; margin: 0; padding: 0; }
 .drawer__foot { display: grid; gap: var(--space-3); padding: var(--space-5); background: var(--paper); padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom)); }
 .drawer__sub { display: flex; justify-content: space-between; font-weight: 800; }
 .drawer__note { font-size: var(--fs-small); color: var(--grey-1); }
+.drawer__promo { font-size: var(--fs-small); font-weight: 700; color: var(--red-ui); }
 .drawer__acc { font-size: var(--fs-small); display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
 .live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
@@ -916,6 +922,8 @@ p, li, .lead, .body, .small, .fact-line, figcaption { text-wrap: pretty; }
 .ribbon__msgs a, .ribbon__side--end { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 .ribbon a:hover { color: var(--red); }
 @media (max-width: 599px) { .ribbon__msgs span { display: none; } }
+.ribbon__phone { display: none; }   /* promotion (Sun, 2026-11-27): the offer itself on phones */
+@media (max-width: 599px) { .ribbon__promo > a:not(.ribbon__phone) { display: none; } .ribbon__promo .ribbon__phone { display: inline; } }
 @media (min-width: 1280px) {
   .ribbon { grid-template-columns: 1fr auto 1fr; gap: var(--space-5); font-size: clamp(11px, 0.7vw, 14px); }
   .ribbon__side { display: block; } .ribbon__side--end { justify-self: end; }

@@ -185,6 +185,7 @@
     $('[data-cart-subtotal]', d).textContent = money(sub);
     $('[data-cart-empty]', d).hidden = n > 0;
     $('[data-cart-foot]', d).hidden = n === 0;
+    const pn = $('[data-promo-note]', d); if (pn) pn.hidden = !cart.lines.some((l) => !byId(l.id).acc);   // the code is for paddles
     list.hidden = n === 0;
   }
   let lastFocus = null;
@@ -236,8 +237,9 @@
         const p = byId(l.id), [h, ...opts] = l.id.split('|');
         return p.acc ? { handle: h, options: opts.filter(Boolean), qty: l.qty } : { handle: p.handle, options: [], qty: l.qty };
       });
+      const code = ($('[data-promo-code]', d) || { dataset: {} }).dataset.promoCode;   // present only while the promotion runs
       b.disabled = true; span.textContent = d.dataset.checkoutLoading; err.hidden = true;
-      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lines }) })
+      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(code ? { lines, discountCodes: [code] } : { lines }) })
         .then((r) => r.json().catch(() => ({})).then((j) => ({ status: r.status, j })))
         .then(({ status, j }) => {
           if (status === 200 && j.ok && j.url) {
@@ -279,7 +281,21 @@
     });
   }
 
-  /* ---------- hero slider ---------- */
+  /* ---------- promotion (Sun, 2026-11-27): the slide, ribbon message and cart note carry their dates (UTC) and come
+     down on their own outside them. Review: ?promo=off shows the site after the promotion, ?promo=on before it starts. ---------- */
+  function promo() {
+    const now = Date.now(), force = params.get('promo');
+    $$('[data-promo]').forEach((el) => {
+      const on = force === 'on' || (force !== 'off' && now >= Date.parse(el.dataset.promoStart) && now <= Date.parse(el.dataset.promoEnd));
+      if (!on) el.parentNode.removeChild(el);
+    });
+    const msgs = $$('.ribbon__msgs li'); if (msgs.length && !msgs.some((li) => !li.hidden)) msgs[0].hidden = false;
+    const root = $('[data-slider]'); if (!root) return;
+    const slides = $$('.slide', root), dots = $$('[data-dot]', root);
+    slides.forEach((s, i) => s.setAttribute('aria-label', `Slide ${i + 1} of ${slides.length}`));
+    dots.forEach((x, i) => x.setAttribute('aria-label', `Slide ${i + 1} of ${dots.length}`));
+  }
+
   /* ---------- notice ribbon (Sun, 2026-10-28): one message at a time, every 6 s ---------- */
   function ribbon() {
     const r = $('[data-ribbon]'); if (!r) return;
@@ -681,7 +697,7 @@
   function init() {
     if (/[?&]notes=1/.test(location.search)) document.documentElement.classList.add('show-notes');
     sprite();
-    header(); mega(); mobileMenu(); cartWire(); ribbon(); slider();
+    promo(); header(); mega(); mobileMenu(); cartWire(); ribbon(); slider();
     $$('[data-paddle-map]').forEach(paddleMap);
     $$('[data-all-grid]').forEach(allGrid);
     $$('[data-compare]').forEach(compare);
